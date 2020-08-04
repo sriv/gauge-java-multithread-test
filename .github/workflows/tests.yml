@@ -12,6 +12,11 @@ jobs:
         gauge-java: [0.7.2, 0.7.3, 0.7.4, 0.7.4, 0.7.5, 0.7.6, 0.7.7, 0.7.8, 0.7.9]
 
     steps:
+      - name: Setup java
+        uses: actions/setup-java@v1
+        with:
+          java-version: ${{ matrix.java }}
+
       - name: Set up Go 1.13
         uses: actions/setup-go@v1
         with:
