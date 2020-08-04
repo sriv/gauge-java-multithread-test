@@ -15,7 +15,7 @@ func TestGaugeRun(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-
+	t.Logf("Stdout/Stderr:\n%s", o)
 	expectations := []struct {
 		pattern string
 		count   int
