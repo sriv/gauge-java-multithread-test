@@ -5,6 +5,7 @@ jobs:
     name: ${{ matrix.os }} | gauge-java-${{ matrix.gauge-java }} | Java-${{ matrix.java }}
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
         os: [windows-latest, ubuntu-latest, macos-latest]
         java: [11,12,13,14]
