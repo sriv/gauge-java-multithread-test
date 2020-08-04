@@ -1,0 +1,33 @@
+name: build
+on: [push]
+jobs:
+  tests:
+    name: ${{ matrix.os }} | gauge-java-${{ matrix.gauge-java }} | Java-${{ matrix.java }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+        java: [11,12,13,14]
+        gauge-java: [0.7.2, 0.7.3, 0.7.4, 0.7.4, 0.7.5, 0.7.6, 0.7.7, 0.7.8, 0.7.9]
+
+    steps:
+      - name: Set up Go 1.13
+        uses: actions/setup-go@v1
+        with:
+          go-version: 1.13
+        id: go
+
+
+      - name: Install Gauge
+      - uses: bugdiver/setup-gauge@master
+        with:
+          gauge-version: v1.1.1
+
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@v2
+
+      - name: Install gauge-java
+        runs: gauge install java --version ${{matrix.gauge-java}} && gauge install
+
+      - name: Test
+        run: go test
