@@ -24,7 +24,7 @@ func TestGaugeRun(t *testing.T) {
 		{"AfterSpec", 4, "AfterSpec=4"},
 		{"BeforeScenario", 8, "BeforeScenario=8"},
 		{"AfterScenario", 8, "AfterScenario=8"},
-		{"ThreadName:", 8, "ThreadCount=8"},
+		{"ThreadName: ", 8, "ThreadCount=8"},
 	}
 
 	for _, e := range expectations {
@@ -35,4 +35,17 @@ func TestGaugeRun(t *testing.T) {
 			}
 		})
 	}
+
+	t.Run("streams in different threads", func(t *testing.T) {
+		lines := strings.Split(string(o), "\n")
+		threads := make(map[string]int)
+		for _, line := range lines {
+			if strings.HasPrefix(line, "ThreadName: ") {
+				threads[strings.ReplaceAll(line, "ThreadName: ", "")]++
+			}
+		}
+		if len(threads) != 4 {
+			t.Errorf("Expected 4 threads, got %d", len(threads))
+		}
+	})
 }
