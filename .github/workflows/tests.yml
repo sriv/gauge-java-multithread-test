@@ -18,7 +18,7 @@ jobs:
         id: go
 
       - name: Install Gauge
-      - uses: bugdiver/setup-gauge@master
+        uses: bugdiver/setup-gauge@master
         with:
           gauge-version: v1.1.1
 
