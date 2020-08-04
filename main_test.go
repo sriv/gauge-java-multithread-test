@@ -1,13 +1,16 @@
 package main
 
 import (
+	"fmt"
 	"os/exec"
 	"strings"
 	"testing"
 )
 
+const numStreams = 4
+
 func TestGaugeRun(t *testing.T) {
-	cmd := exec.Command("gauge", "run", "-p", "specs")
+	cmd := exec.Command("gauge", "run", "-p", "-n", fmt.Sprint(numStreams), "specs")
 	o, err := cmd.CombinedOutput()
 	if err != nil {
 		t.Error(err)
@@ -20,11 +23,11 @@ func TestGaugeRun(t *testing.T) {
 	}{
 		{"BeforeSuite", 1, "BeforeSuite=1"},
 		{"AfterSuite", 1, "AfterSuite=1"},
-		{"BeforeSpec", 4, "BeforeSpec=4"},
-		{"AfterSpec", 4, "AfterSpec=4"},
-		{"BeforeScenario", 8, "BeforeScenario=8"},
-		{"AfterScenario", 8, "AfterScenario=8"},
-		{"ThreadName: ", 8, "ThreadCount=8"},
+		{"BeforeSpec", numStreams, fmt.Sprintf("BeforeSpec=%d", numStreams)},
+		{"AfterSpec", numStreams, fmt.Sprintf("AfterSpec=%d", numStreams)},
+		{"BeforeScenario", numStreams * 2, fmt.Sprintf("BeforeScenario=%d", numStreams*2)},
+		{"AfterScenario", numStreams * 2, fmt.Sprintf("AfterScenario=%d", numStreams*2)},
+		{"ThreadName: ", numStreams * 2, fmt.Sprintf("ThreadCount=%d", numStreams)},
 	}
 
 	for _, e := range expectations {
@@ -44,8 +47,8 @@ func TestGaugeRun(t *testing.T) {
 				threads[strings.ReplaceAll(line, "ThreadName: ", "")]++
 			}
 		}
-		if len(threads) != 4 {
-			t.Errorf("Expected 4 threads, got %d", len(threads))
+		if len(threads) != numStreams {
+			t.Errorf("Expected %d threads, got %d", numStreams, len(threads))
 		}
 	})
 }
